@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streamify - Wähle deine Musik</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #1db954;
+            margin-bottom: 20px;
+        }
+
+        .music-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .music-item {
+            background-color: #1f1f1f;
+            padding: 20px;
+            border-radius: 15px;
+            width: 220px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .music-item:hover {
+            transform: translateY(-10px);
+            background-color: #333;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .music-item img {
+            width: 100%;
+            border-radius: 15px;
+            transition: transform 0.3s;
+        }
+
+        .music-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .music-item h2 {
+            margin: 15px 0;
+            font-size: 1.4em;
+        }
+
+        .player {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #1f1f1f;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .player audio {
+            width: 100%;
+        }
+
+        /* Style für den Audio-Player */
+        audio::-webkit-media-controls-panel {
+            background-color: #1f1f1f;
+            color: white;
+        }
+
+        audio::-webkit-media-controls-play-button,
+        audio::-webkit-media-controls-current-time-display,
+        audio::-webkit-media-controls-time-remaining-display {
+            color: #fff;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Wähle deine Musik</h1>
+        <div class="music-list">
+            <div class="music-item" onclick="playMusic('Warriyo.mp3', 'Warriyo')">
+                <img src="WarriyoLogo.png" alt="Warriyo - NCS">
+                <h2>Warriyo - NCS</h2>
+            </div>
+            <div class="music-item" onclick="playMusic('song2.mp3', 'Song 2')">
+                <img src="cover2.jpg" alt="Cover 2">
+                <h2>Song 2</h2>
+            </div>
+            <div class="music-item" onclick="playMusic('song3.mp3', 'Song 3')">
+                <img src="cover3.jpg" alt="Cover 3">
+                <h2>Song 3</h2>
+            </div>
+            <!-- Füge mehr Songs hier hinzu -->
+        </div>
+    </div>
+
+    <!-- Musik-Player -->
+    <div class="player">
+        <audio id="audioPlayer" controls>
+            <source id="audioSource" src="" type="audio/mpeg">
+            Dein Browser unterstützt kein Audio-Tag.
+        </audio>
+    </div>
+
+    <script>
+        // Funktion zum Abspielen der Musik
+        function playMusic(song, title) {
+            const audioPlayer = document.getElementById('audioPlayer');
+            const audioSource = document.getElementById('audioSource');
+
+            // Setze die Quelle des Audios auf das gewählte Lied
+            audioSource.src = song;
+            audioPlayer.load(); // Lade das neue Lied
+            audioPlayer.play(); // Starte das Abspielen
+
+            // Benachrichtigung anzeigen, wenn das Lied zu Ende ist
+            audioPlayer.onended = function() {
+                showNotification(title);
+            };
+        }
+
+        // Berechtigung für Benachrichtigungen anfordern
+        function requestNotificationPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        console.log('Benachrichtigungen erlaubt');
+                    }
+                });
+            }
+        }
+
+        // Benachrichtigung anzeigen, wenn das Lied zu Ende ist
+        function showNotification(songTitle) {
+            if (Notification.permission === 'granted') {
+                new Notification('Musik beendet', {
+                    body: `Das Lied "${songTitle}" ist zu Ende.`,
+                    icon: 'https://cdn-icons-png.flaticon.com/512/727/727245.png' // Beispiel-Icon
+                });
+            }
+        }
+
+        // Berechtigung beim Laden der Seite anfordern
+        document.addEventListener('DOMContentLoaded', function() {
+            requestNotificationPermission();
+        });
+
+    </script>
+
+</body>
+</html>
